@@ -13,8 +13,7 @@ class HomeScreen extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () async {
             FilePickerResult? result = await FilePicker.platform.pickFiles(
-              type: FileType.custom,
-              allowedExtensions: ['ipynb'],
+              type: FileType.any
             );
 
             if (result != null) {

@@ -16,6 +16,8 @@ class ExecutorScreen extends StatefulWidget {
 class _ExecutorScreenState extends State<ExecutorScreen> {
   late Future<Map<String, dynamic>> _notebookFuture;
 
+  get isLoading => null;
+
   @override
   void initState() {
     super.initState();
@@ -93,11 +95,20 @@ class _ExecutorScreenState extends State<ExecutorScreen> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    await _executeNotebook();
-                  },
-                  child: Text('Execute Notebook'),
-                ),
+                onPressed: () async {
+          setState(() { var isLoading = true; });
+          try {
+          await _executeNotebook();
+          } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Execution Failed: $e'))
+          );
+          } finally {
+          setState(() { var isLoading = false; });
+          }
+          },
+          child: isLoading ? CircularProgressIndicator() : Text('Execute Notebook'),
+          )
               ],
             );
           }

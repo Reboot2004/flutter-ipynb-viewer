@@ -54,10 +54,14 @@ class ViewerScreen extends StatelessWidget {
                               return Text(output['text'].join(''));
                             } else if (output['output_type'] == 'execute_result' ||
                                 output['output_type'] == 'display_data') {
-                              return Text(output['data']['text/plain'].join(''));
-                            } else {
-                              return Container();
+                              var data = output['data'];
+                              if (data.containsKey('text/plain')) {
+                                return Text(data['text/plain'].join(''));
+                              } else if (data.containsKey('image/png')) {
+                                return Image.memory(base64Decode(data['image/png']));
+                              }
                             }
+                            return Container();
                           }).toList(),
                       ],
                     ),
