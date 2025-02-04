@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'viewer_screen.dart';
+import '../utils/permission_handler.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -12,9 +13,16 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
+            bool permissionGranted = await PermissionHandlerUtil.requestStoragePermission();
+            if (!permissionGranted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Storage permission is required to open Jupyter Notebook files')),
+              );
+              return;
+            }
+
             FilePickerResult? result = await FilePicker.platform.pickFiles(
-              type: FileType.custom,
-              allowedExtensions: ['ipynb'],
+              type: FileType.all,
             );
 
             if (result != null) {
