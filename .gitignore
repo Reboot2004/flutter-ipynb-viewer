@@ -1,0 +1,33 @@
+# Flutter/Dart/Pub related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+# IntelliJ related
+.idea/
+*.iml
+*.ipr
+*.iws
+# VS Code related
+.vscode/
+# MacOS related
+.DS_Store
+# Windows related
+Thumbs.db
+# Linux related
+*.lock
+# Generated files
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.old
+*.orig
+*.rej
+*.sublime-project
+*.sublime-workspace
+*.tmproj
