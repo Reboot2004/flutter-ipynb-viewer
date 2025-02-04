@@ -4,19 +4,35 @@ import 'dart:convert';
 import 'dart:io';
 import '../utils/cpython_wrapper.dart';
 
-class ExecutorScreen extends StatelessWidget {
+class ExecutorScreen extends StatefulWidget {
   final String filePath;
 
   ExecutorScreen({required this.filePath});
 
+  @override
+  _ExecutorScreenState createState() => _ExecutorScreenState();
+}
+
+class _ExecutorScreenState extends State<ExecutorScreen> {
+  late Future<Map<String, dynamic>> _notebookFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _notebookFuture = _loadNotebook();
+  }
+
   Future<Map<String, dynamic>> _loadNotebook() async {
-    final file = File(filePath);
+    final file = File(widget.filePath);
     final content = await file.readAsString();
     return json.decode(content);
   }
 
   Future<void> _executeNotebook() async {
-    await CpythonWrapper.runNotebook(filePath);
+    await CpythonWrapper.runNotebook(widget.filePath);
+    setState(() {
+      _notebookFuture = _loadNotebook();
+    });
   }
 
   @override
@@ -26,7 +42,7 @@ class ExecutorScreen extends StatelessWidget {
         title: Text('Jupyter Notebook Executor'),
       ),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: _loadNotebook(),
+        future: _notebookFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -79,7 +95,6 @@ class ExecutorScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () async {
                     await _executeNotebook();
-                    setState(() {});
                   },
                   child: Text('Execute Notebook'),
                 ),
